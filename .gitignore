@@ -1,0 +1,23 @@
+# Maven
+target/
+dependency-reduced-pom.xml
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Compiled
+*.class
+
+# Dados da aplicação (usuários e arquivos criptografados)
+storage/users.json
+storage/qr_*.png
+storage/files/
+
+.DS_Store
+Thumbs.db
+*~
