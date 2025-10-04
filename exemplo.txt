@@ -1,6 +1,5 @@
 Este é um arquivo de teste para demonstrar
 a funcionalidade de upload e download
-do servidor de nuvem simulado.
 
 O conteúdo será criptografado usando AES-GCM
 com chave derivada da senha do usuário via PBKDF2.
@@ -9,7 +8,3 @@ Dados sensíveis:
 - CPF: 123.456.789-00
 - Senha: minha_senha_secreta_123
 - Token: abc123def456
-
-Este arquivo deve ser criptografado de forma
-que apenas o usuário autenticado possa
-decriptografar e visualizar seu conteúdo.
