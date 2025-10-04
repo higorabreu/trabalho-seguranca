@@ -52,12 +52,6 @@ public class AuthenticationManager {
         // Gerar QR Code para configuração 2FA
         String qrCodePath = totpManager.generateQRCode(username, totpSecret);
         
-        // Exibir URI OTP para configuração manual (alternativa ao QR Code)
-        String otpUri = totpManager.getOTPUri(username, totpSecret);
-        System.out.println("\nURI OTP para configuração manual:");
-        System.out.println(otpUri);
-        System.out.println();
-        
         return qrCodePath;
     }
     
