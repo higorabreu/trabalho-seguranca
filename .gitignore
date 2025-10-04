@@ -1,8 +1,6 @@
-# Maven
 target/
 dependency-reduced-pom.xml
 
-# IDEs
 .idea/
 *.iml
 .vscode/
@@ -10,10 +8,8 @@ dependency-reduced-pom.xml
 .project
 .settings/
 
-# Compiled
 *.class
 
-# Dados da aplicação (usuários e arquivos criptografados)
 storage/users.json
 storage/qr_*.png
 storage/files/
@@ -21,3 +17,5 @@ storage/files/
 .DS_Store
 Thumbs.db
 *~
+
+*.png

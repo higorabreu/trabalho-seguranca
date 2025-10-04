@@ -15,10 +15,10 @@ import java.security.Security;
 import java.util.Scanner;
 
 /**
- * Classe principal do Servidor de Nuvem Simulado
+ * Classe principal do Servidor
  * Implementa interface CLI com autenticação 2FA e criptografia AES-GCM
  */
-public class ServidorNuvemSimulado {
+public class Server {
     
     private static final Scanner scanner = new Scanner(System.in);
     private static AuthenticationManager authManager;
@@ -34,9 +34,6 @@ public class ServidorNuvemSimulado {
         // Inicializar componentes
         initializeComponents();
         
-        // Exibir banner
-        exibirBanner();
-        
         // Loop principal da aplicação
         executarLoopPrincipal();
     }
@@ -47,26 +44,9 @@ public class ServidorNuvemSimulado {
             authManager = new AuthenticationManager(userRepo);
             cryptoManager = new CryptoManager();
             fileManager = new FileStorageManager();
-            
-            System.out.println("✓ Componentes inicializados com sucesso");
         } catch (Exception e) {
-            System.err.println("❌ Erro ao inicializar componentes: " + e.getMessage());
             System.exit(1);
         }
-    }
-    
-    private static void exibirBanner() {
-        System.out.println("╔════════════════════════════════════════════════════════════════╗");
-        System.out.println("║              SERVIDOR DE NUVEM SIMULADO                       ║");
-        System.out.println("║          Autenticação 2FA + Criptografia AES-GCM              ║");
-        System.out.println("║                   Trabalho de Segurança                       ║");
-        System.out.println("╚════════════════════════════════════════════════════════════════╝");
-        System.out.println();
-        System.out.println("🔐 Provedor criptográfico: BouncyCastle");
-        System.out.println("🔑 Derivação de chave: PBKDF2-HMAC-SHA256 (100.000 iterações)");
-        System.out.println("🔒 Criptografia: AES-256-GCM (modo autenticado)");
-        System.out.println("📱 Autenticação: TOTP (compatível com Google Authenticator)");
-        System.out.println();
     }
     
     private static void executarLoopPrincipal() {
@@ -89,11 +69,11 @@ public class ServidorNuvemSimulado {
                 }
                 
             } catch (Exception e) {
-                System.err.println("❌ Erro: " + e.getMessage());
+                System.err.println("Erro: " + e.getMessage());
             }
         }
         
-        System.out.println("👋 Obrigado por usar o Servidor de Nuvem Simulado!");
+        System.out.println("Você saiu do sistema");
     }
     
     private static void exibirMenuPrincipal() {
@@ -129,7 +109,7 @@ public class ServidorNuvemSimulado {
             case "0":
                 return false;
             default:
-                System.out.println("❌ Opção inválida!");
+                System.out.println("Opção inválida!");
         }
         return true;
     }
@@ -152,18 +132,18 @@ public class ServidorNuvemSimulado {
                 logout();
                 break;
             default:
-                System.out.println("❌ Opção inválida!");
+                System.out.println("Opção inválida!");
         }
         return true;
     }
     
     private static void registrarUsuario() {
         try {
-            System.out.println("\n📝 REGISTRO DE NOVO USUÁRIO");
+            System.out.println("\nREGISTRO DE NOVO USUÁRIO");
             
             String username = lerString("Nome de usuário: ");
             if (username.trim().isEmpty()) {
-                System.out.println("❌ Nome de usuário não pode estar vazio!");
+                System.out.println("Digite um nome de usuário");
                 return;
             }
             
@@ -171,58 +151,54 @@ public class ServidorNuvemSimulado {
             String confirmPassword = lerSenha("Confirmar senha: ");
             
             if (!password.equals(confirmPassword)) {
-                System.out.println("❌ Senhas não coincidem!");
+                System.out.println("Senhas diferentes");
                 return;
             }
             
-            System.out.println("🔄 Registrando usuário...");
+            System.out.println("Registrando usuário...");
             String qrCodePath = authManager.registerUser(username, password);
-            
-            System.out.println("✅ Usuário registrado com sucesso!");
-            System.out.println("📱 QR Code gerado em: " + qrCodePath);
-            System.out.println("📋 Escaneie o QR Code com seu aplicativo autenticador");
-            System.out.println("   (Google Authenticator, Authy, etc.)");
+            System.out.println("Usuário registrado com sucesso!");
+            System.out.println("QR Code gerado em: " + qrCodePath);
+            System.out.println("Escaneie o QR Code com seu aplicativo autenticador");
             
         } catch (Exception e) {
-            System.err.println("❌ Erro ao registrar usuário: " + e.getMessage());
+            System.err.println("Erro ao registrar usuário: " + e.getMessage());
         }
     }
     
     private static void fazerLogin() {
         try {
-            System.out.println("\n🔐 LOGIN");
+            System.out.println("\nLOGIN");
             
             String username = lerString("Nome de usuário: ");
             String password = lerSenha("Senha: ");
             String totpCode = lerString("Código 2FA (6 dígitos): ");
             
-            System.out.println("🔄 Autenticando...");
+            System.out.println("Autenticando...");
             byte[] userKey = authManager.authenticateUser(username, password, totpCode);
             
             currentUser = username;
             currentUserKey = userKey;
             
-            System.out.println("✅ Login realizado com sucesso!");
-            System.out.printf("👋 Bem-vindo, %s!%n", username);
-            
+            System.out.println("Login realizado com sucesso!");            
         } catch (Exception e) {
-            System.err.println("❌ Falha na autenticação: " + e.getMessage());
+            System.err.println("Falha na autenticação: " + e.getMessage());
         }
     }
     
     private static void uploadArquivo() {
         try {
-            System.out.println("\n📤 UPLOAD DE ARQUIVO");
+            System.out.println("\nUPLOAD DE ARQUIVO");
             
             String filePath = lerString("Caminho do arquivo: ");
             Path path = Paths.get(filePath);
             
             if (!Files.exists(path) || !Files.isReadable(path)) {
-                System.out.println("❌ Arquivo não encontrado ou não legível!");
+                System.out.println("Arquivo não encontrado.");
                 return;
             }
             
-            System.out.println("🔄 Criptografando e enviando arquivo...");
+            System.out.println("Criptografando e enviando arquivo...");
             
             byte[] fileContent = Files.readAllBytes(path);
             byte[] encryptedContent = cryptoManager.encrypt(fileContent, currentUserKey);
@@ -230,28 +206,28 @@ public class ServidorNuvemSimulado {
             String fileName = path.getFileName().toString();
             fileManager.storeFile(currentUser, fileName, encryptedContent);
             
-            System.out.printf("✅ Arquivo '%s' enviado e criptografado com sucesso!%n", fileName);
-            System.out.printf("📊 Tamanho original: %d bytes%n", fileContent.length);
-            System.out.printf("📊 Tamanho criptografado: %d bytes%n", encryptedContent.length);
+            System.out.printf("Arquivo '%s' enviado e criptografado com sucesso!%n", fileName);
+            System.out.printf("Tamanho original: %d bytes%n", fileContent.length);
+            System.out.printf("Tamanho criptografado: %d bytes%n", encryptedContent.length);
             
         } catch (Exception e) {
-            System.err.println("❌ Erro no upload: " + e.getMessage());
+            System.err.println("Erro no upload: " + e.getMessage());
         }
     }
     
     private static void downloadArquivo() {
         try {
-            System.out.println("\n📥 DOWNLOAD DE ARQUIVO");
+            System.out.println("\nDOWNLOAD DE ARQUIVO");
             
             String fileName = lerString("Nome do arquivo: ");
             
-            System.out.println("🔄 Baixando e descriptografando arquivo...");
+            System.out.println("Baixando e descriptografando arquivo...");
             
             byte[] encryptedContent = fileManager.retrieveFile(currentUser, fileName);
             byte[] decryptedContent = cryptoManager.decrypt(encryptedContent, currentUserKey);
             
-            System.out.printf("✅ Arquivo '%s' descriptografado com sucesso!%n", fileName);
-            System.out.println("📄 CONTEÚDO DO ARQUIVO:");
+            System.out.printf("Arquivo '%s' descriptografado com sucesso!%n", fileName);
+            System.out.println("CONTEÚDO DO ARQUIVO:");
             System.out.println("─".repeat(60));
             
             // Tentar exibir como texto, caso contrário mostrar hexdump
@@ -279,51 +255,51 @@ public class ServidorNuvemSimulado {
                 }
                 
                 Files.write(Paths.get(localPath), decryptedContent);
-                System.out.printf("✅ Arquivo salvo em: %s%n", localPath);
+                System.out.printf("Arquivo salvo em: %s%n", localPath);
             }
             
         } catch (Exception e) {
-            System.err.println("❌ Erro no download: " + e.getMessage());
+            System.err.println("Erro no download: " + e.getMessage());
         }
     }
     
     private static void listarArquivos() {
         try {
-            System.out.println("\n📋 MEUS ARQUIVOS");
+            System.out.println("\nMEUS ARQUIVOS");
             
             String[] files = fileManager.listUserFiles(currentUser);
             
             if (files.length == 0) {
-                System.out.println("📭 Nenhum arquivo encontrado.");
+                System.out.println("Nenhum arquivo encontrado.");
             } else {
-                System.out.printf("📁 Encontrados %d arquivo(s):%n", files.length);
+                System.out.printf("Encontrados %d arquivo(s):%n", files.length);
                 for (int i = 0; i < files.length; i++) {
                     System.out.printf("%d. %s%n", i + 1, files[i]);
                 }
             }
             
         } catch (Exception e) {
-            System.err.println("❌ Erro ao listar arquivos: " + e.getMessage());
+            System.err.println("Erro ao listar arquivos: " + e.getMessage());
         }
     }
     
     private static void removerArquivo() {
         try {
-            System.out.println("\n🗑️ REMOVER ARQUIVO");
+            System.out.println("\nREMOVER ARQUIVO");
             
             String fileName = lerString("Nome do arquivo: ");
             String confirmacao = lerString("Tem certeza? Esta ação não pode ser desfeita! (s/N): ");
             
             if (!"s".equalsIgnoreCase(confirmacao.trim())) {
-                System.out.println("❌ Operação cancelada.");
+                System.out.println("Operação cancelada.");
                 return;
             }
             
             fileManager.removeFile(currentUser, fileName);
-            System.out.printf("✅ Arquivo '%s' removido com sucesso!%n", fileName);
+            System.out.printf("Arquivo '%s' removido com sucesso!%n", fileName);
             
         } catch (Exception e) {
-            System.err.println("❌ Erro ao remover arquivo: " + e.getMessage());
+            System.err.println("Erro ao remover arquivo: " + e.getMessage());
         }
     }
     
@@ -334,7 +310,7 @@ public class ServidorNuvemSimulado {
             java.util.Arrays.fill(currentUserKey, (byte) 0);
             currentUserKey = null;
         }
-        System.out.println("👋 Logout realizado com sucesso!");
+        System.out.println("Logout realizado com sucesso!");
     }
     
     // Métodos utilitários

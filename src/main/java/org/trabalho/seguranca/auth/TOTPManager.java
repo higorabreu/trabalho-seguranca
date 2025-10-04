@@ -15,10 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * Gerenciador de TOTP (Time-based One-Time Password)
- * Compatível com Google Authenticator e similares
- */
 public class TOTPManager {
     
     private static final String ISSUER = "Servidor Nuvem Simulado";
@@ -39,11 +35,6 @@ public class TOTPManager {
         this.qrGenerator = new ZxingPngQrGenerator();
     }
     
-    /**
-     * Gera um secret TOTP para um novo usuário
-     * 
-     * @return Secret em Base32
-     */
     public String generateSecret() {
         return secretGenerator.generate();
     }
@@ -67,7 +58,7 @@ public class TOTPManager {
             
         byte[] qrCodeImage = qrGenerator.generate(data);
         
-        // Salvar QR Code em arquivo
+        // salvar QR Code em arquivo
         Path qrCodePath = Paths.get("storage", "qr_" + username + ".png");
         Files.createDirectories(qrCodePath.getParent());
         Files.write(qrCodePath, qrCodeImage);

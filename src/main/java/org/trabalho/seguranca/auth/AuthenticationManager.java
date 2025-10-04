@@ -54,7 +54,7 @@ public class AuthenticationManager {
         
         // Exibir URI OTP para configuração manual (alternativa ao QR Code)
         String otpUri = totpManager.getOTPUri(username, totpSecret);
-        System.out.println("\n📋 URI OTP para configuração manual:");
+        System.out.println("\nURI OTP para configuração manual:");
         System.out.println(otpUri);
         System.out.println();
         

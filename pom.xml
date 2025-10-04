@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <groupId>org.trabalho.seguranca</groupId>
-    <artifactId>servidor-nuvem-simulado</artifactId>
+    <artifactId>server</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     
@@ -95,7 +95,7 @@
                             </filters>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.trabalho.seguranca.ServidorNuvemSimulado</mainClass>
+                                    <mainClass>org.trabalho.seguranca.Server</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
