@@ -9,33 +9,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-/**
- * Repositório para gerenciar dados dos usuários
- * Armazena credenciais de forma segura em arquivo JSON
- */
+// gerencia dados dos usuarios em arquivo json
 public class UserRepository {
     
     private static final Path USERS_FILE = Paths.get("storage", "users.json");
     
     public UserRepository() throws IOException {
-        // Criar diretório storage se não existir
+        // cria diretorio storage se nao existir
         Files.createDirectories(USERS_FILE.getParent());
         
-        // Criar arquivo de usuários se não existir
+        // cria arquivo de usuarios se nao existir
         if (!Files.exists(USERS_FILE)) {
             JSONArray emptyArray = new JSONArray();
             Files.write(USERS_FILE, emptyArray.toString(2).getBytes());
         }
     }
     
-    /**
-     * Salva um novo usuário
-     * 
-     * @param username Nome do usuário
-     * @param salt Salt para derivação de chave
-     * @param passwordHash Hash da senha derivado por PBKDF2
-     * @param totpSecret Secret TOTP em Base32
-     */
+    // salva novo usuario
     public void saveUser(String username, byte[] salt, byte[] passwordHash, String totpSecret) 
             throws IOException {
         
@@ -51,12 +41,7 @@ public class UserRepository {
                    StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
     
-    /**
-     * Busca um usuário pelo nome
-     * 
-     * @param username Nome do usuário
-     * @return User ou null se não encontrado
-     */
+    // busca usuario pelo nome
     public User findUser(String username) throws IOException {
         JSONArray users = loadUsers();
         
@@ -70,19 +55,12 @@ public class UserRepository {
         return null;
     }
     
-    /**
-     * Verifica se um usuário existe
-     * 
-     * @param username Nome do usuário
-     * @return true se o usuário existir
-     */
+    // verifica se usuario existe
     public boolean userExists(String username) throws IOException {
         return findUser(username) != null;
     }
     
-    /**
-     * Carrega todos os usuários do arquivo
-     */
+    // carrega todos os usuários do arquivo
     private JSONArray loadUsers() throws IOException {
         String content = new String(Files.readAllBytes(USERS_FILE));
         return new JSONArray(content);

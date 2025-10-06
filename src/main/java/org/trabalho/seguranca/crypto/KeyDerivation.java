@@ -7,36 +7,24 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
-/**
- * Utilitários para derivação segura de chaves usando PBKDF2
- */
+// derivacao segura de chaves usando pbkdf2
 public class KeyDerivation {
     
     private static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA256";
-    private static final int SALT_LENGTH = 16; // 128 bits
-    private static final int ITERATIONS = 100_000; // 100.000 iterações
-    private static final int KEY_LENGTH = 256; // 256 bits
+    private static final int SALT_LENGTH = 16;
+    private static final int ITERATIONS = 100_000;
+    private static final int KEY_LENGTH = 256;
     
     private static final SecureRandom secureRandom = new SecureRandom();
     
-    /**
-     * Gera um salt aleatório
-     * 
-     * @return Salt de 16 bytes
-     */
+    // gera salt aleatorio
     public static byte[] generateSalt() {
         byte[] salt = new byte[SALT_LENGTH];
         secureRandom.nextBytes(salt);
         return salt;
     }
     
-    /**
-     * Deriva uma chave a partir de uma senha usando PBKDF2
-     * 
-     * @param password Senha do usuário
-     * @param salt Salt único para o usuário
-     * @return Chave derivada de 32 bytes (256 bits)
-     */
+    // deriva chave a partir da senha usando pbkdf2
     public static byte[] deriveKey(String password, byte[] salt) 
             throws NoSuchAlgorithmException, InvalidKeySpecException {
         
@@ -52,25 +40,18 @@ public class KeyDerivation {
             byte[] key = factory.generateSecret(spec).getEncoded();
             return key;
         } finally {
-            // Limpar senha da memória por segurança
+            // limpa senha da memoria
             spec.clearPassword();
         }
     }
     
-    /**
-     * Verifica se uma senha corresponde ao hash armazenado
-     * 
-     * @param password Senha fornecida
-     * @param salt Salt armazenado
-     * @param expectedHash Hash esperado
-     * @return true se a senha estiver correta
-     */
+    // verifica se senha corresponde ao hash armazenado
     public static boolean verifyPassword(String password, byte[] salt, byte[] expectedHash) {
         try {
             byte[] derivedKey = deriveKey(password, salt);
             boolean matches = Arrays.equals(derivedKey, expectedHash);
             
-            // Limpar chave derivada da memória
+            // limpa chave derivada da memoria
             Arrays.fill(derivedKey, (byte) 0);
             
             return matches;

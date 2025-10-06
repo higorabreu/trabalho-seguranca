@@ -6,18 +6,13 @@ import org.trabalho.seguranca.storage.FileStorageManager;
 import org.trabalho.seguranca.storage.UserRepository;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import java.io.Console;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Security;
 import java.util.Scanner;
 
-/**
- * Classe principal do Servidor
- * Implementa interface CLI com autenticação 2FA e criptografia AES-GCM
- */
+// servidor cli com autenticacao 2fa e criptografia aes-gcm
 public class Server {
     
     private static final Scanner scanner = new Scanner(System.in);
@@ -28,13 +23,10 @@ public class Server {
     private static byte[] currentUserKey = null;
     
     public static void main(String[] args) {
-        // Registrar provedor criptográfico BouncyCastle
+        // registra provedor bouncycastle
         Security.addProvider(new BouncyCastleProvider());
         
-        // Inicializar componentes
         initializeComponents();
-        
-        // Loop principal da aplicação
         executarLoopPrincipal();
     }
     
@@ -147,9 +139,9 @@ public class Server {
                 return;
             }
             
-            String password = lerSenha("Senha: ");
-            String confirmPassword = lerSenha("Confirmar senha: ");
-            
+            String password = lerString("Senha: ");
+            String confirmPassword = lerString("Confirmar senha: ");
+
             if (!password.equals(confirmPassword)) {
                 System.out.println("Senhas diferentes");
                 return;
@@ -171,7 +163,7 @@ public class Server {
             System.out.println("\nLOGIN");
             
             String username = lerString("Nome de usuário: ");
-            String password = lerSenha("Senha: ");
+            String password = lerString("Senha: ");
             String totpCode = lerString("Código 2FA (6 dígitos): ");
             
             System.out.println("Autenticando...");
@@ -227,35 +219,11 @@ public class Server {
             byte[] decryptedContent = cryptoManager.decrypt(encryptedContent, currentUserKey);
             
             System.out.printf("Arquivo '%s' descriptografado com sucesso!%n", fileName);
-            System.out.println("CONTEÚDO DO ARQUIVO:");
-            System.out.println("─".repeat(60));
             
-            // Tentar exibir como texto, caso contrário mostrar hexdump
-            try {
-                String content = new String(decryptedContent, "UTF-8");
-                if (isDisplayableText(content)) {
-                    System.out.println(content);
-                } else {
-                    System.out.println("(Arquivo binário - exibindo hexdump dos primeiros 256 bytes)");
-                    exibirHexdump(decryptedContent, Math.min(256, decryptedContent.length));
-                }
-            } catch (Exception e) {
-                System.out.println("(Arquivo binário - exibindo hexdump dos primeiros 256 bytes)");
-                exibirHexdump(decryptedContent, Math.min(256, decryptedContent.length));
-            }
-            
-            System.out.println("─".repeat(60));
-            
-            // Opção de salvar localmente
-            String salvar = lerString("Deseja salvar o arquivo localmente? (s/N): ");
+            String salvar = lerString("Deseja salvar o arquivo? (s/N): ");
             if ("s".equalsIgnoreCase(salvar.trim())) {
-                String localPath = lerString("Caminho para salvar (ou ENTER para usar nome original): ");
-                if (localPath.trim().isEmpty()) {
-                    localPath = fileName;
-                }
-                
-                Files.write(Paths.get(localPath), decryptedContent);
-                System.out.printf("Arquivo salvo em: %s%n", localPath);
+                Files.write(Paths.get(fileName), decryptedContent);
+                System.out.printf("Arquivo salvo em: %s%n", fileName);
             }
             
         } catch (Exception e) {
@@ -306,14 +274,13 @@ public class Server {
     private static void logout() {
         currentUser = null;
         if (currentUserKey != null) {
-            // Limpar chave da memória por segurança
+            // limpa chave da memoria
             java.util.Arrays.fill(currentUserKey, (byte) 0);
             currentUserKey = null;
         }
         System.out.println("Logout realizado com sucesso!");
     }
     
-    // Métodos utilitários
     private static String lerString(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
@@ -322,51 +289,5 @@ public class Server {
     private static String lerOpcao(String prompt) {
         System.out.print("\n" + prompt);
         return scanner.nextLine().trim();
-    }
-    
-    private static String lerSenha(String prompt) {
-        Console console = System.console();
-        if (console != null) {
-            char[] password = console.readPassword(prompt);
-            return new String(password);
-        } else {
-            // Fallback para IDEs que não suportam Console
-            System.out.print(prompt);
-            return scanner.nextLine();
-        }
-    }
-    
-    private static boolean isDisplayableText(String content) {
-        return content.chars()
-                .allMatch(c -> c >= 32 || c == '\n' || c == '\r' || c == '\t');
-    }
-    
-    private static void exibirHexdump(byte[] data, int maxBytes) {
-        for (int i = 0; i < maxBytes; i += 16) {
-            System.out.printf("%08x: ", i);
-            
-            // Hex bytes
-            for (int j = 0; j < 16; j++) {
-                if (i + j < maxBytes) {
-                    System.out.printf("%02x ", data[i + j] & 0xFF);
-                } else {
-                    System.out.print("   ");
-                }
-            }
-            
-            System.out.print(" ");
-            
-            // ASCII representation
-            for (int j = 0; j < 16 && i + j < maxBytes; j++) {
-                char c = (char) (data[i + j] & 0xFF);
-                System.out.print(c >= 32 && c <= 126 ? c : '.');
-            }
-            
-            System.out.println();
-        }
-        
-        if (data.length > maxBytes) {
-            System.out.printf("... (%d bytes totais)%n", data.length);
-        }
     }
 }

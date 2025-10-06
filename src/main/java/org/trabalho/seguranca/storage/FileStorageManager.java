@@ -7,25 +7,17 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.stream.Stream;
 
-/**
- * Gerenciador de armazenamento de arquivos criptografados
- */
+// gerencia armazenamento de arquivos criptografados
 public class FileStorageManager {
     
     private static final Path STORAGE_ROOT = Paths.get("storage", "files");
     
     public FileStorageManager() throws IOException {
-        // Criar diretório de armazenamento se não existir
+        // cria diretorio de armazenamento se nao existir
         Files.createDirectories(STORAGE_ROOT);
     }
     
-    /**
-     * Armazena um arquivo criptografado para um usuário
-     * 
-     * @param username Nome do usuário
-     * @param fileName Nome do arquivo
-     * @param encryptedContent Conteúdo criptografado
-     */
+    // armazena arquivo criptografado para um usuario
     public void storeFile(String username, String fileName, byte[] encryptedContent) throws IOException {
         Path userDir = getUserDirectory(username);
         Files.createDirectories(userDir);
@@ -37,13 +29,7 @@ public class FileStorageManager {
                    StandardOpenOption.TRUNCATE_EXISTING);
     }
     
-    /**
-     * Recupera um arquivo criptografado de um usuário
-     * 
-     * @param username Nome do usuário
-     * @param fileName Nome do arquivo
-     * @return Conteúdo criptografado
-     */
+    // recupera arquivo criptografado de um usuario
     public byte[] retrieveFile(String username, String fileName) throws IOException {
         Path filePath = getUserDirectory(username).resolve(fileName + ".enc");
         
@@ -54,12 +40,7 @@ public class FileStorageManager {
         return Files.readAllBytes(filePath);
     }
     
-    /**
-     * Lista todos os arquivos de um usuário
-     * 
-     * @param username Nome do usuário
-     * @return Array com nomes dos arquivos (sem extensão .enc)
-     */
+    // lista todos os arquivos de um usuario
     public String[] listUserFiles(String username) throws IOException {
         Path userDir = getUserDirectory(username);
         
@@ -73,17 +54,12 @@ public class FileStorageManager {
                 .map(Path::getFileName)
                 .map(Path::toString)
                 .filter(name -> name.endsWith(".enc"))
-                .map(name -> name.substring(0, name.length() - 4)) // Remove .enc
+                .map(name -> name.substring(0, name.length() - 4)) // remove .enc
                 .toArray(String[]::new);
         }
     }
     
-    /**
-     * Remove um arquivo de um usuário
-     * 
-     * @param username Nome do usuário
-     * @param fileName Nome do arquivo
-     */
+    // remove arquivo de um usuario
     public void removeFile(String username, String fileName) throws IOException {
         Path filePath = getUserDirectory(username).resolve(fileName + ".enc");
         
@@ -94,24 +70,13 @@ public class FileStorageManager {
         Files.delete(filePath);
     }
     
-    /**
-     * Verifica se um arquivo existe para um usuário
-     * 
-     * @param username Nome do usuário
-     * @param fileName Nome do arquivo
-     * @return true se o arquivo existir
-     */
+    // verifica se arquivo existe para um usuario
     public boolean fileExists(String username, String fileName) {
         Path filePath = getUserDirectory(username).resolve(fileName + ".enc");
         return Files.exists(filePath);
     }
     
-    /**
-     * Obtém o diretório de um usuário
-     * 
-     * @param username Nome do usuário
-     * @return Path do diretório do usuário
-     */
+    // obtem diretorio de um usuario
     private Path getUserDirectory(String username) {
         return STORAGE_ROOT.resolve(username);
     }

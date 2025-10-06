@@ -39,13 +39,7 @@ public class TOTPManager {
         return secretGenerator.generate();
     }
     
-    /**
-     * Gera um QR Code para configuração no aplicativo autenticador
-     * 
-     * @param username Nome do usuário
-     * @param secret Secret TOTP em Base32
-     * @return Caminho para o arquivo PNG do QR Code
-     */
+    // gera qr code para configuracao no app autenticador
     public String generateQRCode(String username, String secret) throws QrGenerationException, IOException {
         QrData data = new QrData.Builder()
             .label(username)
@@ -58,7 +52,7 @@ public class TOTPManager {
             
         byte[] qrCodeImage = qrGenerator.generate(data);
         
-        // salvar QR Code em arquivo
+        // salva qr code em arquivo
         Path qrCodePath = Paths.get("storage", "qr_" + username + ".png");
         Files.createDirectories(qrCodePath.getParent());
         Files.write(qrCodePath, qrCodeImage);
@@ -66,13 +60,7 @@ public class TOTPManager {
         return qrCodePath.toAbsolutePath().toString();
     }
     
-    /**
-     * Verifica um código TOTP fornecido pelo usuário
-     * 
-     * @param secret Secret TOTP do usuário
-     * @param code Código de 6 dígitos fornecido
-     * @return true se o código estiver válido
-     */
+    // verifica codigo totp fornecido pelo usuario
     public boolean verifyCode(String secret, String code) {
         try {
             return codeVerifier.isValidCode(secret, code);
@@ -81,24 +69,13 @@ public class TOTPManager {
         }
     }
     
-    /**
-     * Gera o código TOTP atual para um secret (útil para testes)
-     * 
-     * @param secret Secret TOTP
-     * @return Código atual de 6 dígitos
-     */
+    // gera codigo totp atual (util para testes)
     public String getCurrentCode(String secret) throws Exception {
         long timeWindow = timeProvider.getTime() / TIME_PERIOD;
         return codeGenerator.generate(secret, timeWindow);
     }
     
-    /**
-     * Obtém a URI OTP para configuração manual
-     * 
-     * @param username Nome do usuário
-     * @param secret Secret TOTP
-     * @return URI no formato otpauth://
-     */
+    // obtem uri otp para configuracao manual
     public String getOTPUri(String username, String secret) {
         return String.format(
             "otpauth://totp/%s:%s?secret=%s&issuer=%s&algorithm=SHA1&digits=%d&period=%d",

@@ -3,9 +3,7 @@ package org.trabalho.seguranca.storage;
 import org.json.JSONObject;
 import java.util.Base64;
 
-/**
- * Classe para representar dados de um usuário
- */
+// representa dados de um usuario
 public class User {
     private String username;
     private byte[] salt;
@@ -19,13 +17,12 @@ public class User {
         this.totpSecret = totpSecret;
     }
     
-    // Getters
     public String getUsername() { return username; }
     public byte[] getSalt() { return salt; }
     public byte[] getPasswordHash() { return passwordHash; }
     public String getTotpSecret() { return totpSecret; }
     
-    // Conversão para JSON
+    // converte para json
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
         json.put("username", username);
@@ -35,7 +32,7 @@ public class User {
         return json;
     }
     
-    // Criação a partir de JSON
+    // cria a partir de json
     public static User fromJSON(JSONObject json) {
         return new User(
             json.getString("username"),
