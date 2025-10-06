@@ -65,7 +65,7 @@ public class Server {
             }
         }
         
-        System.out.println("Você saiu do sistema");
+        System.out.println("Você saiu do sistema.");
     }
     
     private static void exibirMenuPrincipal() {
