@@ -1,5 +1,10 @@
 # Servidor de Nuvem Simulado
 
+## Alunos
+- Higor Abreu Freiberger
+- Isabela Vill de Aquino
+- Guilherme Henriques do Carmo
+
 ## Descrição
 
 Este projeto implementa um servidor simulado de nuvem com as seguintes características de segurança:
